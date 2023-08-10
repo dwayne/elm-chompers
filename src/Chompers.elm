@@ -3,9 +3,9 @@ module Chompers exposing (chompOptional)
 import Parser as P exposing (Parser)
 
 
-chompOptional : Parser () -> Parser ()
-chompOptional p =
+chompOptional : (Char -> Bool) -> Parser ()
+chompOptional isGood =
     P.oneOf
-        [ p
+        [ P.chompIf isGood
         , P.succeed ()
         ]

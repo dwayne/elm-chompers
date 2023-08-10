@@ -46,15 +46,12 @@ type Sign
     | Negative
 
 
-
---
--- optionalSign ::= (+|-)?
---
-
-
 optionalSign : Parser (Maybe Sign)
 optionalSign =
-    chompOptionalSign
+    --
+    -- optionalSign ::= (+|-)?
+    --
+    C.chompOptional isSign
         |> P.mapChompedString
             (\s _ ->
                 if s == "" then
@@ -67,11 +64,6 @@ optionalSign =
                     -- if s == "-" then
                     Just Negative
             )
-
-
-chompOptionalSign : Parser ()
-chompOptionalSign =
-    C.chompOptional (P.chompIf isSign)
 
 
 isSign : Char -> Bool
