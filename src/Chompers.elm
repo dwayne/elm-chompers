@@ -1,4 +1,4 @@
-module Chompers exposing (chompOptional, chompZeroOrMore)
+module Chompers exposing (chompOneOrMore, chompOptional, chompZeroOrMore)
 
 import Parser as P exposing ((|.), Parser)
 
@@ -14,3 +14,10 @@ chompOptional isGood =
 chompZeroOrMore : (Char -> Bool) -> Parser ()
 chompZeroOrMore =
     P.chompWhile
+
+
+chompOneOrMore : (Char -> Bool) -> Parser ()
+chompOneOrMore isGood =
+    P.succeed ()
+        |. P.chompIf isGood
+        |. P.chompWhile isGood
