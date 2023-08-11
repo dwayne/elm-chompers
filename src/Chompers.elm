@@ -1,4 +1,9 @@
-module Chompers exposing (chompOneOrMore, chompOptional, chompZeroOrMore)
+module Chompers exposing
+    ( chompExactly
+    , chompOneOrMore
+    , chompOptional
+    , chompZeroOrMore
+    )
 
 import Parser as P exposing ((|.), Parser)
 
@@ -21,3 +26,15 @@ chompOneOrMore isGood =
     P.succeed ()
         |. P.chompIf isGood
         |. P.chompWhile isGood
+
+
+chompExactly : Int -> (Char -> Bool) -> Parser ()
+chompExactly n isGood =
+    if n <= 0 then
+        P.succeed ()
+
+    else
+        -- if n > 0 then
+        P.succeed ()
+            |. P.chompIf isGood
+            |. chompExactly (n - 1) isGood
