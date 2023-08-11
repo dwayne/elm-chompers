@@ -3,6 +3,7 @@
 project="${project:?}"
 
 elm-format \
+    "$project/benchmarks" \
     "$project/src" \
     "$project/tests" \
     --yes

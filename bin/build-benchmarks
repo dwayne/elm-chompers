@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+project="${project:?}"
+
+cd "$project/benchmarks" && \
+  elm-optimize-level-2 "src/Main.elm" --optimize-speed --output benchmarks.js

@@ -3,9 +3,12 @@ let
 in
 pkgs.mkShell {
   packages = [
+    pkgs.caddy
     pkgs.elmPackages.elm
     pkgs.elmPackages.elm-format
+    pkgs.elmPackages.elm-optimize-level-2
     pkgs.elmPackages.elm-test
+    pkgs.shellcheck
   ];
 
   shellHook =
