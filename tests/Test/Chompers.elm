@@ -92,6 +92,29 @@ suite =
                     P.run zipCode "01234-5"
                         |> expectDeadEnd P.UnexpectedChar
             ]
+        , let
+            atLeast3Letters =
+                P.getChompedString <|
+                    C.chompAtLeast 3 Char.isAlpha
+          in
+          describe "chompAtLeast"
+            [ test "with 3 letters" <|
+                \_ ->
+                    P.run atLeast3Letters "aBc"
+                        |> Expect.equal (Ok "aBc")
+            , test "with 7 letters" <|
+                \_ ->
+                    P.run atLeast3Letters "abcXYZd"
+                        |> Expect.equal (Ok "abcXYZd")
+            , test "with 2 letters" <|
+                \_ ->
+                    P.run atLeast3Letters "ab"
+                        |> expectDeadEnd P.UnexpectedChar
+            , test "empty" <|
+                \_ ->
+                    P.run atLeast3Letters ""
+                        |> expectDeadEnd P.UnexpectedChar
+            ]
         ]
 
 
