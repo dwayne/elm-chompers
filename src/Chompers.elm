@@ -30,11 +30,12 @@ chompOneOrMore isGood =
 
 chompExactly : Int -> (Char -> Bool) -> Parser ()
 chompExactly n isGood =
-    if n <= 0 then
-        P.succeed ()
+    P.loop n
+        (\i ->
+            if i <= 0 then
+                P.succeed <| P.Done ()
 
-    else
-        -- if n > 0 then
-        P.succeed ()
-            |. P.chompIf isGood
-            |. chompExactly (n - 1) isGood
+            else
+                P.chompIf isGood
+                    |> P.andThen (\_ -> P.succeed (P.Loop (i - 1)))
+        )
