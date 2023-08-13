@@ -3,6 +3,7 @@ module Main exposing (main)
 import Benchmark exposing (Benchmark, describe)
 import Benchmark.Runner as BR
 import ChompAtLeast
+import ChompAtMost
 import ChompExactly
 import Parser as P
 
@@ -34,4 +35,10 @@ benchmarks =
             (\_ -> P.run (ChompAtLeast.version1 n Char.isDigit) (nZeros ++ nZeros))
             "version2"
             (\_ -> P.run (ChompAtLeast.version2 n Char.isDigit) (nZeros ++ nZeros))
+        , Benchmark.compare "chompAtMost"
+            "version1"
+            (\_ -> P.run (ChompAtMost.version1 n Char.isDigit) (nZeros ++ nZeros))
+            "version2"
+            -- version 2 is faster
+            (\_ -> P.run (ChompAtMost.version2 n Char.isDigit) (nZeros ++ nZeros))
         ]

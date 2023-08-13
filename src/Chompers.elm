@@ -1,5 +1,6 @@
 module Chompers exposing
     ( chompAtLeast
+    , chompAtMost
     , chompExactly
     , chompOneOrMore
     , chompOptional
@@ -47,3 +48,19 @@ chompAtLeast m isGood =
     P.succeed ()
         |. chompExactly m isGood
         |. P.chompWhile isGood
+
+
+chompAtMost : Int -> (Char -> Bool) -> Parser ()
+chompAtMost n isGood =
+    P.loop 0
+        (\i ->
+            if i < n then
+                P.oneOf
+                    [ P.chompIf isGood
+                        |> P.andThen (\_ -> P.succeed (P.Loop (i + 1)))
+                    , P.succeed <| P.Done ()
+                    ]
+
+            else
+                P.succeed <| P.Done ()
+        )

@@ -115,6 +115,41 @@ suite =
                     P.run atLeast3Letters ""
                         |> expectDeadEnd P.UnexpectedChar
             ]
+        , let
+            atMost3Letters =
+                P.getChompedString <|
+                    C.chompAtMost 3 Char.isAlpha
+          in
+          describe "chompAtMost"
+            [ test "empty" <|
+                \_ ->
+                    P.run atMost3Letters ""
+                        |> Expect.equal (Ok "")
+            , test "with 1 letter" <|
+                \_ ->
+                    P.run atMost3Letters "a"
+                        |> Expect.equal (Ok "a")
+            , test "with 2 letters" <|
+                \_ ->
+                    P.run atMost3Letters "aB"
+                        |> Expect.equal (Ok "aB")
+            , test "with 3 letters" <|
+                \_ ->
+                    P.run atMost3Letters "aBc"
+                        |> Expect.equal (Ok "aBc")
+            , test "with 4 letters" <|
+                \_ ->
+                    P.run atMost3Letters "aBcD"
+                        |> Expect.equal (Ok "aBc")
+            , test "with 5 letters" <|
+                \_ ->
+                    P.run atMost3Letters "aBcDe"
+                        |> Expect.equal (Ok "aBc")
+            , test "with a digit as the third character" <|
+                \_ ->
+                    P.run atMost3Letters "aB1D"
+                        |> Expect.equal (Ok "aB")
+            ]
         ]
 
 
