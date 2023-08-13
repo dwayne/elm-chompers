@@ -150,6 +150,75 @@ suite =
                     P.run atMost3Letters "aB1D"
                         |> Expect.equal (Ok "aB")
             ]
+        , let
+            between3And5Letters =
+                P.getChompedString <|
+                    C.chompBetween 3 5 Char.isAlpha
+          in
+          describe "chompBetween"
+            [ test "with 3 letters" <|
+                \_ ->
+                    P.run between3And5Letters "aBc"
+                        |> Expect.equal (Ok "aBc")
+            , test "with 4 letters" <|
+                \_ ->
+                    P.run between3And5Letters "aBcD"
+                        |> Expect.equal (Ok "aBcD")
+            , test "with 5 letters" <|
+                \_ ->
+                    P.run between3And5Letters "aBcDe"
+                        |> Expect.equal (Ok "aBcDe")
+            , test "empty" <|
+                \_ ->
+                    P.run between3And5Letters ""
+                        |> expectDeadEnd P.UnexpectedChar
+            , test "with 1 letter" <|
+                \_ ->
+                    P.run between3And5Letters "a"
+                        |> expectDeadEnd P.UnexpectedChar
+            , test "with 2 letters" <|
+                \_ ->
+                    P.run between3And5Letters "aB"
+                        |> expectDeadEnd P.UnexpectedChar
+            , test "with 6 letters" <|
+                \_ ->
+                    P.run between3And5Letters "aBcDeF"
+                        |> Expect.equal (Ok "aBcDe")
+            , test "with a digit as the fourth character" <|
+                \_ ->
+                    P.run between3And5Letters "aBc1e"
+                        |> Expect.equal (Ok "aBc")
+            , test "with a digit as the fifth character" <|
+                \_ ->
+                    P.run between3And5Letters "aBcD1F"
+                        |> Expect.equal (Ok "aBcD")
+            , describe "wierd ranges" <|
+                let
+                    between m n =
+                        P.getChompedString <|
+                            C.chompBetween m n Char.isAlpha
+
+                    letters =
+                        "abcdefghi"
+                in
+                [ test "example 1" <|
+                    \_ ->
+                        P.run (between -3 -1) letters
+                            |> Expect.equal (Ok "")
+                , test "example 2" <|
+                    \_ ->
+                        P.run (between -3 2) letters
+                            |> Expect.equal (Ok "ab")
+                , test "example 3" <|
+                    \_ ->
+                        P.run (between -1 -3) letters
+                            |> Expect.equal (Ok "")
+                , test "example 4" <|
+                    \_ ->
+                        P.run (between 4 -3) letters
+                            |> Expect.equal (Ok "")
+                ]
+            ]
         ]
 
 

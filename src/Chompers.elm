@@ -1,6 +1,7 @@
 module Chompers exposing
     ( chompAtLeast
     , chompAtMost
+    , chompBetween
     , chompExactly
     , chompOneOrMore
     , chompOptional
@@ -64,3 +65,20 @@ chompAtMost n isGood =
             else
                 P.succeed <| P.Done ()
         )
+
+
+chompBetween : Int -> Int -> (Char -> Bool) -> Parser ()
+chompBetween m n isGood =
+    if m > n then
+        P.succeed ()
+
+    else
+        let
+            l =
+                max m 0
+
+            h =
+                max l n
+        in
+        chompExactly l isGood
+            |> P.andThen (\_ -> chompAtMost (h - l) isGood)
