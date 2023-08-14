@@ -14,19 +14,19 @@ suite =
                 [ test "no sign" <|
                     \_ ->
                         P.run optionalSign ""
-                            |> Expect.equal (Ok Nothing)
+                            |> Expect.equal (Ok Positive)
                 , test "+ sign" <|
                     \_ ->
                         P.run optionalSign "+"
-                            |> Expect.equal (Ok <| Just Positive)
+                            |> Expect.equal (Ok Positive)
                 , test "- sign" <|
                     \_ ->
                         P.run optionalSign "-"
-                            |> Expect.equal (Ok <| Just Negative)
+                            |> Expect.equal (Ok Negative)
                 , test "not a sign" <|
                     \_ ->
                         P.run optionalSign "abc"
-                            |> Expect.equal (Ok Nothing)
+                            |> Expect.equal (Ok Positive)
                 ]
             ]
         , describe "chompZeroOrMore"
@@ -231,29 +231,26 @@ type Sign
     | Negative
 
 
-optionalSign : Parser (Maybe Sign)
+optionalSign : Parser Sign
 optionalSign =
     --
     -- optionalSign ::= (+|-)?
     --
-    C.chompOptional isSign
+    chompOptionalSign
         |> P.mapChompedString
             (\s _ ->
-                if s == "" then
-                    Nothing
-
-                else if s == "+" then
-                    Just Positive
+                if s == "" || s == "+" then
+                    Positive
 
                 else
                     -- if s == "-" then
-                    Just Negative
+                    Negative
             )
 
 
-isSign : Char -> Bool
-isSign c =
-    c == '+' || c == '-'
+chompOptionalSign : Parser ()
+chompOptionalSign =
+    C.chompOptional (\c -> c == '+' || c == '-')
 
 
 
